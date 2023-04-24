@@ -14,6 +14,7 @@ public class MoveToClickNav : MonoBehaviour
     LayerMask floorMask;
     public Animator animator;
     public GameObject agente;
+    private Vector3 posicion;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +27,7 @@ public class MoveToClickNav : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
@@ -37,15 +39,16 @@ public class MoveToClickNav : MonoBehaviour
                 _agent.destination = hit.point;
                 animator.SetBool("IsWalking", true);
                 animator.SetBool("IsIdle", false);
-               
+                posicion = hit.point;
             }
-            if (_agent.transform.position == hit.point)
-            {
-                //animator.SetBool("IsWalking", false);
-                //animator.SetBool("IsIdle", true);
-            }
+            
 
 
+        }
+        if (_agent.transform.position == posicion)
+        {
+            animator.SetBool("IsWalking", false);
+            animator.SetBool("IsIdle", true);
         }
     }
 
