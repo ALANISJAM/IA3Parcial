@@ -4,14 +4,24 @@ using UnityEngine;
 
 public class PatrolState : BaseState
 {
+    
+
+   
+
     public PatrolAgentFSM _sm;
 
     private WaitForSeconds RotateIntervalWait;
 
     private Coroutine RotateCoroutineRef;
 
-    // public float fRotateAngle = 45f;
 
+    // public float fRotateAngle = 45f;
+    public void Start()
+    {
+       
+    }
+   
+    
     public PatrolState(StateMachine stateMachine) : base("Patrol", stateMachine)
     {
         // el ": base("Patrol", stateMachine)" equivale a escribir las siguientes líneas, 
@@ -53,6 +63,11 @@ public class PatrolState : BaseState
         // base.Enter();
         // Por ejemplo, aquí podrían poner el Trigger de su animator a "SetTrigger("OnPatrol")"
         RotateCoroutineRef = _sm.StartCoroutine(this.Rotate());
+        _sm.animator.SetBool("IsIdle", true);
+        _sm.animator.SetBool("IsRuning", false);
+        _sm.animator.SetBool("IsAttacking", false) ;
+        _sm.animator.SetBool("IsWalking", false );
+        
     }
 
     public override void Exit()
@@ -61,6 +76,10 @@ public class PatrolState : BaseState
         /// Debug.Log("Exited Patrol State.");
     }
 
+    public void Update()
+    {
+        
+    }
     public override void UpdateLogic()
     {
         // revisamos la condición de cambio de estado, que es si el infiltrador está en el campo de visión
@@ -93,6 +112,7 @@ public class PatrolState : BaseState
 
 public class AlertState : BaseState
 {
+
     public PatrolAgentFSM _sm;
 
     private float fTotalTimeTargetHasBeenOnFOV = 0.0f;
@@ -119,6 +139,9 @@ public class AlertState : BaseState
         fTotalTimeTargetHasBeenOnFOV = 0.0f;
         fTotalTimeBeforeGoing = 0.0f;
         bCheckingLastKnownPos = AlertStep.preparingToGo;
+        _sm.animator.SetBool("IsRuning", true);
+        _sm.animator.SetBool("IsIdle", false);
+        _sm.animator.SetBool("IsWalking", false);
     }
 
     public override void Exit() { }
@@ -181,6 +204,7 @@ public class AlertState : BaseState
         {
             Debug.Log("Changing to AttackState");
             _sm.ChangeState(_sm.attackState);
+
             return;
         }
 
@@ -189,6 +213,7 @@ public class AlertState : BaseState
 
 public class AttackState : BaseState
 {
+    public Animator animator;
     public PatrolAgentFSM _sm;
     private float fCurrentChaseTime;
     private bool bGoingBackToPatrolPos = false;
@@ -209,6 +234,10 @@ public class AttackState : BaseState
         fCurrentChaseTime = 0.0f;
         bGoingBackToPatrolPos = false;
         _sm.navMeshAgent.destination = _sm.v3TargetTransform.position;
+        _sm.animator.SetBool("IsAttacking", true);
+        _sm.animator.SetBool("IsIdle", false);
+        _sm.animator.SetBool("IsRuning", false) ;
+        _sm.animator.SetBool("IsWalking", false);
     }
 
     private void CheckPersecutionTime()
@@ -229,8 +258,10 @@ public class AttackState : BaseState
         float fDist = (_sm.transform.position - _sm.v3AgentPatrollingPosition).magnitude;
         if (fDist <= 1.0f)
         {
+            
             _sm.navMeshAgent.destination = _sm.transform.position;
             _sm.ChangeState(_sm.patrolState);
+           
             return;
         }
     }
@@ -254,7 +285,11 @@ public class AttackState : BaseState
         }
         else
         {
+            _sm.animator.SetBool("IsWalking", true);
+            
             GoBackToPatrolPosition();
+            _sm.animator.SetBool("IsAttacking", false);
+
         }
     }
 }

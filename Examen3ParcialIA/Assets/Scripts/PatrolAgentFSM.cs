@@ -11,6 +11,7 @@ public class PatrolAgentFSM : StateMachine
     public AlertState alertState;
     [HideInInspector]
     public AttackState attackState;
+    public Animator animator;
 
     // Máscara de capa para solo hacer el Raycast contra los objetos en esta capa.
     private LayerMask WallLayerMask;
@@ -96,6 +97,7 @@ public class PatrolAgentFSM : StateMachine
     {
         get { return fMaxChasingTime; }
     }
+
 
     public bool CheckFieldOfVision(float in_fVisionDist, float in_fVisionAngle, out Vector3 v3TargetPos)
     {

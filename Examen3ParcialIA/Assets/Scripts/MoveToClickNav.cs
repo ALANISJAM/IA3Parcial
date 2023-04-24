@@ -12,12 +12,15 @@ public class MoveToClickNav : MonoBehaviour
 {
     NavMeshAgent _agent = null;
     LayerMask floorMask;
+    public Animator animator;
+    public GameObject agente;
 
     // Start is called before the first frame update
     void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
         floorMask = LayerMask.GetMask("Floor");
+        agente.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -32,7 +35,16 @@ public class MoveToClickNav : MonoBehaviour
             {
                 // Le decimos que vaya al punto en el piso que chocó con el rayo de la cámara.
                 _agent.destination = hit.point;
+                animator.SetBool("IsWalking", true);
+                animator.SetBool("IsIdle", false);
+
             }
+            else
+            {
+                animator.SetBool("IsWalking", false);
+                animator.SetBool("IsIdle", true );
+            }    
+            
         }
     }
 
