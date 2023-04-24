@@ -37,14 +37,15 @@ public class MoveToClickNav : MonoBehaviour
                 _agent.destination = hit.point;
                 animator.SetBool("IsWalking", true);
                 animator.SetBool("IsIdle", false);
-
+               
             }
-            else
+            if (_agent.transform.position == hit.point)
             {
-                animator.SetBool("IsWalking", false);
-                animator.SetBool("IsIdle", true );
-            }    
-            
+                //animator.SetBool("IsWalking", false);
+                //animator.SetBool("IsIdle", true);
+            }
+
+
         }
     }
 
