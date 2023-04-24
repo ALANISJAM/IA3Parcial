@@ -14,7 +14,9 @@ public class MoveToClickNav : MonoBehaviour
     LayerMask floorMask;
     public Animator animator;
     public GameObject agente;
-    private Vector3 posicion;
+    public GameObject agent_position;
+    public Vector3 posicion;
+    public bool walk;
 
     // Start is called before the first frame update
     void Start()
@@ -22,12 +24,18 @@ public class MoveToClickNav : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         floorMask = LayerMask.GetMask("Floor");
         agente.GetComponent<Animator>();
+        walk = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (agent_position.transform.position == posicion)
+        {
+            walk = false;
+            animator.SetBool("IsWalking", false);
 
+        }
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
@@ -35,21 +43,21 @@ public class MoveToClickNav : MonoBehaviour
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit,
                 100.0f, floorMask))
             {
+                
                 // Le decimos que vaya al punto en el piso que chocó con el rayo de la cámara.
+                posicion = hit.point;
+                posicion.y = 0.8833333f;
                 _agent.destination = hit.point;
                 animator.SetBool("IsWalking", true);
-                animator.SetBool("IsIdle", false);
-                posicion = hit.point;
+                walk = true;
             }
             
-
-
         }
-        if (_agent.transform.position == posicion)
-        {
-            animator.SetBool("IsWalking", false);
-            animator.SetBool("IsIdle", true);
-        }
+        
+        //if(walk == true)
+        //{
+            
+        //}
     }
 
     private void OnDrawGizmos()
